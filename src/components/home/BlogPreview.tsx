@@ -19,7 +19,7 @@ export function BlogPreview({ blogs }: { blogs: BlogPreviewItem[] }) {
       <div className="page-container">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="section-label">From the Blog</span>
-          <h2 className="section-title text-brown mt-2">Millets, Health & More</h2>
+          <h2 className="section-title text-brown mt-2">Clean Eating, Real Talk</h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {blogs.map(b => (

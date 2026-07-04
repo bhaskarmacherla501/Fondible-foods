@@ -3,6 +3,14 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 const CERTIFICATIONS = ['Real Butter', 'No Refined Sugar', 'No Preservatives', 'No Artificial Ingredients', 'Jaggery Sweetened']
 const ALLERGENS = ['Tree Nuts', 'Wheat', 'Dairy']
 
@@ -211,6 +219,77 @@ async function main() {
     })
   }
   console.log('✅ Brand site config seeded')
+
+  // Blog posts
+  const blogPosts = [
+    {
+      title: 'Why We Bake With Real Butter (And Never Vanaspati)',
+      excerpt: 'Vanaspati is cheaper, shelf-stable, and used in most commercial cookies. Here\'s why we refuse to use it.',
+      category: 'Ingredients',
+      tags: ['real-butter', 'ingredients', 'clean-baking'],
+      content: `Walk into any commercial bakery and you'll find a tub of vanaspati — hydrogenated vegetable oil, solid at room temperature, cheap, and nearly shelf-stable forever. It's in most packaged cookies you've ever eaten.
+
+We don't use it. Not a gram, not ever.
+
+Vanaspati is made by forcing hydrogen into vegetable oil under high pressure, turning a liquid into a solid fat that behaves like butter without costing like butter. It's been linked to trans fats, and while regulations have tightened, "reduced trans fat" isn't the same as "no trans fat."
+
+Real butter costs more. It has a shorter shelf life. It requires refrigeration and careful handling. It makes the entire baking process harder to scale. We do it anyway, because the difference shows up in the first bite — that rich, rounded flavor that vanaspati can only approximate with additives.
+
+Every Fondible cookie is made with fresh, churned butter. No substitutes, no exceptions.`,
+      authorName: 'Team Fondible',
+      isPublished: true,
+    },
+    {
+      title: 'Jaggery vs. Refined Sugar: What\'s Actually the Difference?',
+      excerpt: 'They both sweeten. That\'s where the similarity ends.',
+      category: 'Health',
+      tags: ['jaggery', 'refined-sugar', 'health'],
+      content: `Sugar is sugar, right? Not quite.
+
+Refined white sugar is sucrose stripped of everything else that came with it in the original sugarcane — the molasses, the minerals, the trace nutrients. What's left is pure sweetness with no nutritional value beyond calories.
+
+Jaggery is unrefined. It's made by boiling down sugarcane juice until it solidifies, keeping the molasses intact. That means it retains iron, potassium, and small amounts of other minerals that refined sugar processing removes entirely.
+
+Jaggery also has a lower glycemic index than refined sugar, meaning it causes a slower rise in blood sugar. It's not a health food — let's be clear about that — but ingredient for ingredient, it's the more honest sweetener.
+
+And there's the taste: jaggery carries a deep, caramel-like warmth that white sugar simply cannot replicate. Once you taste the difference side by side, it's hard to go back.
+
+Every Fondible cookie is sweetened with jaggery. Zero refined sugar, zero exceptions.`,
+      authorName: 'Team Fondible',
+      isPublished: true,
+    },
+    {
+      title: 'Whole Wheat vs. Maida: Reading Between the Lines',
+      excerpt: 'Maida is refined wheat flour with almost everything that matters removed. Here\'s what gets lost.',
+      category: 'Ingredients',
+      tags: ['whole-wheat', 'maida', 'ingredients'],
+      content: `Maida is what's left after wheat is milled, bleached, and stripped of its bran and germ — the parts that carry fiber, protein, and most of the grain's nutrients. What remains is a fine, white flour that bakes up soft and stretchy, and digests almost like sugar.
+
+It's cheap, consistent, and used in the overwhelming majority of commercial baked goods, including most "healthy" cookies that swap out one ingredient while keeping maida in the mix.
+
+Whole wheat flour keeps the bran and germ intact. It's higher in fiber, digests more slowly, and carries more of the grain's natural nutrition. It's also harder to work with — doughs behave differently, textures are less uniform, and consistency takes real skill to nail down.
+
+We use stone-ground whole wheat flour in every Fondible cookie, along with grain flours like ragi and jowar in select recipes. Never maida — not even blended in for texture, which is a common shortcut we chose not to take.
+
+If a cookie brand doesn't tell you what flour they use, that's usually the answer.`,
+      authorName: 'Team Fondible',
+      isPublished: true,
+    },
+  ]
+  for (const post of blogPosts) {
+    const slug = slugify(post.title)
+    await prisma.blog.upsert({
+      where:  { slug },
+      update: {},
+      create: {
+        ...post, slug,
+        seoTitle: `${post.title} | Fondible Blog`,
+        seoDesc:  post.excerpt,
+        publishedAt: post.isPublished ? new Date() : null,
+      },
+    })
+  }
+  console.log('✅ Blog posts seeded')
 
   console.log('\n🎉 Fondible database seeded successfully!')
   console.log('\nAdmin credentials:')
