@@ -23,7 +23,7 @@ const FOOTER_LINKS = {
     { label: 'Track Order',      href: '/track-order' },
     { label: 'Contact Us',       href: '/contact' },
     { label: 'Corporate Gifting',href: '/corporate-gifting' },
-    { label: 'Bulk Orders',      href: '/franchise' },
+    { label: 'Bulk Orders',      href: '/corporate-gifting' },
   ],
   policies: [
     { label: 'Privacy Policy',   href: '/privacy-policy' },
