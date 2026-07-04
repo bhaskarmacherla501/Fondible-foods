@@ -42,7 +42,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 lg:col-span-1">
-            <Image src="/images/logo.png" alt="Fondible" width={120} height={40} className="h-10 w-auto mb-4 brightness-150" />
+            <Image src="/images/logo-white.png" alt="Fondible" width={120} height={40} className="h-10 w-auto mb-4 object-contain" />
             <p className="text-sm text-cream/60 leading-relaxed mb-5 max-w-52">
               Better Food. Better Living.<br />
               Freshly baked cookies — genuinely good for you.

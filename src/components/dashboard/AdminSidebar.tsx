@@ -41,7 +41,7 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/8">
         <Link href="/">
-          <Image src="/images/logo.png" alt="Fondible" width={100} height={36} className="h-9 w-auto brightness-150" />
+          <Image src="/images/logo-white.png" alt="Fondible" width={100} height={36} className="h-9 w-auto object-contain" />
         </Link>
         <span className="text-2xs text-gold/70 tracking-widest uppercase mt-1 block">Admin Panel</span>
       </div>

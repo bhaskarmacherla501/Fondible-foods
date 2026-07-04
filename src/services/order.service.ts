@@ -183,7 +183,7 @@ export class OrderService {
     const month = new Date(now.getFullYear(), now.getMonth(), 1)
     const prev  = new Date(now.getFullYear(), now.getMonth() - 1, 1)
 
-    const [thisMonth, lastMonth, pending, customers, lowStock] = await Promise.all([
+    const [thisMonth, lastMonth, pending, customers, customersThisMonth, customersLastMonth, lowStock] = await Promise.all([
       prisma.order.aggregate({
         where:   { createdAt: { gte: month }, paymentStatus: 'PAID' },
         _sum:    { total: true },
@@ -196,6 +196,8 @@ export class OrderService {
       }),
       prisma.order.count({ where: { status: { in: ['PLACED', 'CONFIRMED', 'PACKED'] } } }),
       prisma.user.count({ where: { role: 'CUSTOMER' } }),
+      prisma.user.count({ where: { role: 'CUSTOMER', createdAt: { gte: month } } }),
+      prisma.user.count({ where: { role: 'CUSTOMER', createdAt: { gte: prev, lt: month } } }),
       prisma.productVariant.count({ where: { stock: { lte: prisma.productVariant.fields.lowStockAt } } }),
     ])
 
@@ -211,6 +213,7 @@ export class OrderService {
       avgOrderValue:    ord > 0 ? rev / ord : 0,
       revenueGrowth:    prevR > 0 ? ((rev - prevR) / prevR) * 100 : 0,
       ordersGrowth:     prevO > 0 ? ((ord - prevO) / prevO) * 100 : 0,
+      customersGrowth:  customersLastMonth > 0 ? ((customersThisMonth - customersLastMonth) / customersLastMonth) * 100 : 0,
       pendingOrders:    pending,
       lowStockProducts: lowStock,
     }
