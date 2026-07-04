@@ -11,16 +11,17 @@ export async function GET(req: NextRequest) {
   const record = await prisma.pincode.findUnique({ where: { code: pincode } })
 
   if (!record) {
-    // Fallback: check if Hyderabad range (500xxx)
+    // Fallback: Hyderabad pincodes get priority 1-2 day free shipping;
+    // every other valid 6-digit Indian pincode is serviceable pan-India by default
     const isHyd = pincode.startsWith('500') || pincode.startsWith('501') || pincode.startsWith('502')
     return NextResponse.json({
       success: true,
       data: {
         pincode,
-        isServiceable: isHyd,
+        isServiceable: true,
         shippingDays:  isHyd ? 1 : 4,
-        shippingCost:  isHyd ? 0 : 49,
-        message:       isHyd ? 'Same-day delivery available!' : 'Currently not serviceable',
+        shippingCost:  isHyd ? 0 : 60,
+        message:       isHyd ? 'Same-day delivery available!' : 'Delivery in 3-5 business days',
       },
     })
   }

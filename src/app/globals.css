@@ -30,9 +30,14 @@
 
   body {
     @apply bg-cream text-brown antialiased;
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+
+  strong, b, em { font-weight: 500; }
 
   /* Scrollbar */
   ::-webkit-scrollbar       { width: 6px; height: 6px; }
@@ -55,35 +60,59 @@
 
   /* Section Label */
   .section-label {
-    @apply inline-block text-xs font-bold tracking-widest uppercase text-gold
+    @apply inline-block uppercase text-gold
            bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mb-4;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
   }
 
   /* Section Title */
   .section-title {
-    @apply font-display text-4xl md:text-5xl font-semibold leading-tight;
+    @apply font-display leading-tight;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  /* Hero H1 — larger, bolder than a standard section title */
+  .hero-title {
+    @apply font-display leading-tight;
+    font-size: clamp(3rem, 7vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
   /* Buttons */
   .btn-primary {
     @apply inline-flex items-center gap-2 bg-brown text-cream
-           px-6 py-3 rounded-full text-sm font-semibold tracking-wide
+           px-6 py-3 rounded-full
            transition-all duration-300 shadow-brand-sm
            hover:bg-gold hover:-translate-y-0.5 hover:shadow-gold-glow;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   .btn-secondary {
     @apply inline-flex items-center gap-2 bg-transparent text-brown
-           px-6 py-3 rounded-full text-sm font-medium
+           px-6 py-3 rounded-full
            border border-brown/20 transition-all duration-300
            hover:border-gold hover:text-gold hover:bg-gold/5;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   .btn-wa {
     @apply inline-flex items-center gap-2 bg-[#25D366] text-white
-           px-6 py-3 rounded-full text-sm font-bold
+           px-6 py-3 rounded-full
            transition-all duration-300 shadow-wa-glow
            hover:bg-[#128C7E] hover:-translate-y-0.5;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   /* Cards */
@@ -123,8 +152,10 @@
 
   /* Trust strip */
   .trust-item {
-    @apply flex items-center gap-2.5 text-2xs font-semibold tracking-widest
-           uppercase text-gold-pale flex-shrink-0;
+    @apply flex items-center gap-2.5 uppercase text-gold-pale flex-shrink-0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
   }
 
   /* Product grid */
@@ -150,6 +181,43 @@
   /* Page container */
   .page-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Navbar links */
+  .navbar-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* Product card */
+  .product-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .product-card-meta {
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* Benefit card titles ("Good for you" section) */
+  .benefit-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* Footer */
+  .footer-heading {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+
+  .footer-link {
+    font-size: 0.85rem;
+    font-weight: 400;
   }
 }
 

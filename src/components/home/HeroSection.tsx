@@ -16,12 +16,12 @@ export function HeroSection() {
       <div className="page-container grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <span className="section-label">Better Food. Better Living.</span>
-          <h1 className="section-title text-brown mt-2">
+          <h1 className="hero-title text-brown mt-2">
             Cookies that love you back
           </h1>
           <p className="mt-6 text-brown/70 text-lg max-w-md">
             Baked with whole wheat, real butter, whole nuts and jaggery — nothing hidden,
-            nothing artificial. Just honest indulgence, delivered across Hyderabad.
+            nothing artificial. Just honest indulgence, delivered across India.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/shop" className="btn-primary">

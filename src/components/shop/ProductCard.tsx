@@ -34,9 +34,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       </Link>
       <div className="p-5">
         <Link href={`/shop/${product.slug}`}>
-          <h3 className="font-semibold text-brown mb-1">{product.name}</h3>
+          <h3 className="product-card-title text-brown mb-1">{product.name}</h3>
         </Link>
-        {product.shortDesc && <p className="text-sm text-brown/60 mb-3 line-clamp-2">{product.shortDesc}</p>}
+        {product.shortDesc && <p className="product-card-meta text-brown/60 mb-3 line-clamp-2">{product.shortDesc}</p>}
         <div className="flex items-center gap-1 mb-3 text-xs text-brown/50">
           <Star className="w-3.5 h-3.5 text-gold fill-gold" />
           {product.averageRating.toFixed(1)} ({product.reviewCount})

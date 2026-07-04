@@ -1,7 +1,9 @@
 import { Check, X } from 'lucide-react'
 
 const ROWS = [
-  { label: 'Main Flour', fondible: 'Millets (Ragi, Jowar)', regular: 'Refined Maida' },
+  { label: 'Fat Used', fondible: 'Real Butter', regular: 'Vanaspati / Margarine' },
+  { label: 'Artificial Flavors', fondible: 'None', regular: 'Often Added' },
+  { label: 'Main Flour', fondible: 'Whole Wheat & Real Grains', regular: 'Refined Maida' },
   { label: 'Sweetener', fondible: 'Jaggery', regular: 'Refined White Sugar' },
   { label: 'Preservatives', fondible: 'None', regular: 'Often Added' },
   { label: 'Fiber Content', fondible: 'High', regular: 'Low' },

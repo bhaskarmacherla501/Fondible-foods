@@ -18,7 +18,7 @@ export function BenefitsSection() {
             <div className="w-12 h-12 mx-auto rounded-2xl bg-gold/10 flex items-center justify-center mb-4 text-2xl">
               {b.icon}
             </div>
-            <h3 className="font-semibold text-brown mb-2">{b.title}</h3>
+            <h3 className="benefit-card-title text-brown mb-2">{b.title}</h3>
             <p className="text-sm text-brown/60">{b.desc}</p>
           </div>
         ))}

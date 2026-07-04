@@ -1,10 +1,10 @@
-import { MessageCircle, ShoppingCart, CreditCard, Truck } from 'lucide-react'
+import { PackageCheck, ShoppingCart, CreditCard, Truck } from 'lucide-react'
 
 const STEPS = [
   { icon: ShoppingCart, title: 'Pick Your Cookies', desc: 'Browse the shop and choose your favourite flavours.' },
   { icon: CreditCard, title: 'Checkout Securely', desc: 'Pay via UPI, card, or cash on delivery.' },
-  { icon: Truck, title: 'Freshly Baked & Shipped', desc: 'We bake your order and ship it within 24-48 hours.' },
-  { icon: MessageCircle, title: 'Need Help?', desc: 'Message us on WhatsApp anytime — we reply fast.' },
+  { icon: Truck, title: 'Freshly Baked & Shipped', desc: 'We bake fresh once your order is confirmed and ship within 24 hours. Delivery in 1-5 days depending on your location.' },
+  { icon: PackageCheck, title: 'Track & Enjoy', desc: 'Get real-time order updates via email and WhatsApp notifications. Track your order anytime from your dashboard.' },
 ]
 
 export function HowToOrder() {

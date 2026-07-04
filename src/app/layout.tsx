@@ -28,8 +28,8 @@ export const metadata: Metadata = {
     default:  'Fondible — Better Food. Better Living.',
     template: '%s | Fondible',
   },
-  description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery — zero refined sugar, zero artificial ingredients, zero shortcuts. Freshly baked and delivered in Hyderabad.',
-  keywords:    ['whole wheat cookies', 'real butter cookies', 'jaggery cookies', 'clean ingredient cookies', 'no refined sugar cookies', 'healthy cookies Hyderabad', 'no preservative cookies', 'artisanal cookies India', 'Fondible', 'no maida cookies', 'whole ingredient baking'],
+  description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery — zero refined sugar, zero artificial ingredients, zero shortcuts. Freshly baked and delivered across India.',
+  keywords:    ['whole wheat cookies', 'real butter cookies', 'jaggery cookies', 'clean ingredient cookies', 'no refined sugar cookies', 'healthy cookies India', 'no preservative cookies', 'artisanal cookies India', 'Fondible', 'no maida cookies', 'whole ingredient baking'],
   authors:     [{ name: 'Fondible' }],
   creator:     'Fondible',
   openGraph: {

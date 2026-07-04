@@ -61,11 +61,11 @@ export function getDiscountPercentage(original: number, sale: number): number {
   return Math.round(((original - sale) / original) * 100)
 }
 
-export function buildWAOrderMessage(items: Array<{ name: string; quantity: number; price: number }>, total: number): string {
-  const lines = items.map(i => `• ${i.quantity}x ${i.name} — ₹${i.price * i.quantity}`).join('\n')
-  return encodeURIComponent(
-    `Hi Fondible! 🍪 I'd like to place an order:\n\n${lines}\n\nTotal: ₹${total}\n\nPlease confirm availability and delivery. 🙏`
-  )
+export function buildWASupportMessage(orderId?: string): string {
+  const msg = orderId
+    ? `Hi Fondible! I have a question about my order. Order ID: ${orderId}. Can you help?`
+    : `Hi Fondible! I have a question. Can you help?`
+  return encodeURIComponent(msg)
 }
 
 export function getPaginationMeta(total: number, page: number, limit: number) {

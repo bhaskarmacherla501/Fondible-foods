@@ -18,13 +18,25 @@ async function main() {
   })
   console.log('✅ Admin created:', admin.email)
 
-  // Category
+  // Category — one unified category, no millet-specific sub-category
+  // One-time migration: fold the old millet-cookies category into the renamed one
+  const oldCategory = await prisma.category.findUnique({ where: { slug: 'millet-cookies' } })
+  if (oldCategory) {
+    await prisma.category.update({
+      where: { id: oldCategory.id },
+      data:  {
+        name: 'Clean-Baked Cookies', slug: 'clean-baked-cookies',
+        description: 'Whole ingredient cookies baked with real butter, whole wheat and real grains',
+      },
+    })
+  }
+
   const category = await prisma.category.upsert({
-    where:  { slug: 'millet-cookies' },
+    where:  { slug: 'clean-baked-cookies' },
     update: {},
     create: {
-      name: 'Millet Cookies', slug: 'millet-cookies',
-      description: 'Whole ingredient cookies baked with real butter, whole wheat and grains like ragi and jowar',
+      name: 'Clean-Baked Cookies', slug: 'clean-baked-cookies',
+      description: 'Whole ingredient cookies baked with real butter, whole wheat and real grains',
       isActive: true, sortOrder: 1,
     },
   })
@@ -102,8 +114,8 @@ async function main() {
       storageInfo:     'Store in a cool, dry place. Best consumed within 2 weeks of opening.',
       nutritionFacts:  { servingSize: '2 cookies (46g)', calories: 210, protein: 5, carbohydrates: 28, fat: 10, fiber: 3, sugar: 8, sodium: 80 },
       seoTitle:        `${p.name} — Whole Ingredient Cookies | Fondible`,
-      seoDesc:         `${p.shortDesc} No maida, no refined sugar, no artificial ingredients. Fresh-baked in Hyderabad.`,
-      seoKeywords:     [...p.tags, 'whole ingredient cookie', 'jaggery cookie', 'real butter cookie', 'clean baking', 'Hyderabad'],
+      seoDesc:         `${p.shortDesc} No maida, no refined sugar, no artificial ingredients. Freshly baked and delivered across India.`,
+      seoKeywords:     [...p.tags, 'whole ingredient cookie', 'jaggery cookie', 'real butter cookie', 'clean baking', 'India'],
     }
 
     const product = await prisma.product.upsert({
@@ -145,7 +157,7 @@ async function main() {
     },
   })
 
-  // Hyderabad pincodes
+  // Hyderabad pincodes — priority, free 1-day shipping
   const hydPincodes = ['500001','500002','500003','500004','500008','500010','500016',
     '500018','500019','500020','500032','500033','500034','500035','500072','500081','500084']
   for (const code of hydPincodes) {
@@ -153,6 +165,32 @@ async function main() {
       where:  { code },
       update: {},
       create: { code, city: 'Hyderabad', state: 'Telangana', isServiceable: true, shippingDays: 1, shippingCost: 0 },
+    })
+  }
+
+  // Metro pincodes — standard pan-India shipping
+  const metroPincodes = [
+    { code: '400001', city: 'Mumbai',    state: 'Maharashtra' },
+    { code: '400051', city: 'Mumbai',    state: 'Maharashtra' },
+    { code: '400069', city: 'Mumbai',    state: 'Maharashtra' },
+    { code: '110001', city: 'Delhi',     state: 'Delhi' },
+    { code: '110011', city: 'Delhi',     state: 'Delhi' },
+    { code: '110020', city: 'Delhi',     state: 'Delhi' },
+    { code: '560001', city: 'Bangalore', state: 'Karnataka' },
+    { code: '560034', city: 'Bangalore', state: 'Karnataka' },
+    { code: '560068', city: 'Bangalore', state: 'Karnataka' },
+    { code: '600001', city: 'Chennai',   state: 'Tamil Nadu' },
+    { code: '600010', city: 'Chennai',   state: 'Tamil Nadu' },
+    { code: '600020', city: 'Chennai',   state: 'Tamil Nadu' },
+    { code: '411001', city: 'Pune',      state: 'Maharashtra' },
+    { code: '411014', city: 'Pune',      state: 'Maharashtra' },
+    { code: '411028', city: 'Pune',      state: 'Maharashtra' },
+  ]
+  for (const p of metroPincodes) {
+    await prisma.pincode.upsert({
+      where:  { code: p.code },
+      update: {},
+      create: { code: p.code, city: p.city, state: p.state, isServiceable: true, shippingDays: 3, shippingCost: 60 },
     })
   }
   console.log('✅ Pincodes seeded')

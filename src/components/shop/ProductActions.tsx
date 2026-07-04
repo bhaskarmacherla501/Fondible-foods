@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Minus, Plus, ShoppingBag } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useCartStore } from '@/store/cart.store'
-import { formatPrice, buildWAOrderMessage } from '@/lib/utils'
+import { formatPrice } from '@/lib/utils'
 
 interface Variant {
   id: string
@@ -43,11 +43,6 @@ export function ProductActions({
   const handleBuyNow = () => {
     handleAddToCart()
     router.push('/checkout')
-  }
-
-  const handleWhatsAppOrder = () => {
-    const msg = buildWAOrderMessage([{ name: `${productName} (${variant.name})`, quantity: qty, price: variant.price }], variant.price * qty)
-    window.open(`https://wa.me/918019730055?text=${msg}`, '_blank')
   }
 
   return (
@@ -103,9 +98,6 @@ export function ProductActions({
             </button>
             <button onClick={handleBuyNow} className="btn-primary">
               Buy Now
-            </button>
-            <button onClick={handleWhatsAppOrder} className="btn-wa">
-              Order on WhatsApp
             </button>
           </div>
         </>

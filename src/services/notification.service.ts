@@ -146,7 +146,7 @@ export class NotificationService {
       </a>
     </div>
     <div style="background:#F7F2E8;padding:20px;text-align:center;">
-      <p style="color:#8B6655;font-size:12px;margin:0;">© 2025 Fondible · Made with ❤️ in Hyderabad</p>
+      <p style="color:#8B6655;font-size:12px;margin:0;">© 2025 Fondible · Made with ❤️ in India</p>
     </div>
   </div>
 </body>

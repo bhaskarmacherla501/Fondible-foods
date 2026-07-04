@@ -51,7 +51,7 @@ export function WishlistClient({ items }: { items: WishlistItemData[] }) {
           </Link>
           <div className="p-5">
             <Link href={`/shop/${item.product.slug}`}>
-              <h3 className="font-semibold text-brown mb-2">{item.product.name}</h3>
+              <h3 className="product-card-title text-brown mb-2">{item.product.name}</h3>
             </Link>
             <div className="flex items-center justify-between">
               <span className="font-display text-lg font-semibold text-brown">

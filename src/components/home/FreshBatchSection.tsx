@@ -4,7 +4,7 @@ import { Clock, PackageCheck, Truck } from 'lucide-react'
 const STEPS = [
   { icon: Clock, title: 'Baked to Order', desc: 'Every batch is baked fresh once your order is placed — never sitting on a shelf.' },
   { icon: PackageCheck, title: 'Sealed for Freshness', desc: 'Packed in air-tight pouches within hours of baking.' },
-  { icon: Truck, title: 'Delivered Fast', desc: 'On your doorstep across Hyderabad within 24-48 hours.' },
+  { icon: Truck, title: 'Delivered Fast', desc: 'On your doorstep within 2-5 business days depending on your location.' },
 ]
 
 export function FreshBatchSection() {

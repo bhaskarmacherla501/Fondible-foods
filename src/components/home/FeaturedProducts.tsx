@@ -44,9 +44,9 @@ export function FeaturedProducts({ products }: { products: FeaturedProduct[] }) 
               </Link>
               <div className="p-5">
                 <Link href={`/shop/${p.slug}`}>
-                  <h3 className="font-semibold text-brown mb-1">{p.name}</h3>
+                  <h3 className="product-card-title text-brown mb-1">{p.name}</h3>
                 </Link>
-                {p.shortDesc && <p className="text-sm text-brown/60 mb-3 line-clamp-2">{p.shortDesc}</p>}
+                {p.shortDesc && <p className="product-card-meta text-brown/60 mb-3 line-clamp-2">{p.shortDesc}</p>}
                 <div className="flex items-center gap-1 mb-3 text-xs text-brown/50">
                   <Star className="w-3.5 h-3.5 text-gold fill-gold" />
                   {p.averageRating.toFixed(1)} ({p.reviewCount})

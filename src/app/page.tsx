@@ -14,7 +14,7 @@ import prisma                from '@/lib/prisma'
 
 export const metadata: Metadata = {
   title:       'Fondible — Better Food. Better Living.',
-  description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery — zero refined sugar, zero artificial ingredients, zero shortcuts. Freshly baked and delivered in Hyderabad.',
+  description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery — zero refined sugar, zero artificial ingredients, zero shortcuts. Freshly baked and delivered across India.',
   alternates:  { canonical: 'https://fondible.in' },
 }
 
@@ -61,7 +61,7 @@ export default async function HomePage() {
         url:        'https://fondible.in',
         logo:       'https://fondible.in/images/logo.png',
         description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery. Better Food. Better Living.',
-        address:    { '@type': 'PostalAddress', addressLocality: 'Hyderabad', addressCountry: 'IN' },
+        address:    { '@type': 'PostalAddress', addressCountry: 'IN' },
         contactPoint: { '@type': 'ContactPoint', telephone: '+91-80197-30055', contactType: 'customer service' },
         sameAs:     ['https://www.instagram.com/fondible', 'https://www.facebook.com/fondible'],
       })}} />

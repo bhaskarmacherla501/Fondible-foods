@@ -60,6 +60,10 @@ const config: Config = {
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '1rem' }],
+        base: ['1rem', { lineHeight: '1.8' }],
+        'display-xl': ['5rem',   { lineHeight: '1.0',  fontWeight: '700' }],
+        'display-lg': ['3.8rem', { lineHeight: '1.05', fontWeight: '700' }],
+        'display-md': ['2.8rem', { lineHeight: '1.1',  fontWeight: '600' }],
       },
       borderRadius: {
         lg: 'var(--radius)',
