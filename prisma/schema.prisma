@@ -1,0 +1,619 @@
+// Fondible Platform — Prisma Schema
+// PostgreSQL + Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum OrderStatus {
+  PLACED
+  CONFIRMED
+  PACKED
+  DISPATCHED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentMethod {
+  RAZORPAY
+  UPI
+  CARD
+  WALLET
+  COD
+}
+
+enum CouponType {
+  PERCENTAGE
+  FLAT
+  FREE_SHIPPING
+  BUY_X_GET_Y
+}
+
+enum NotificationType {
+  ORDER_UPDATE
+  PROMOTIONAL
+  SYSTEM
+  REWARD
+  RESTOCK
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum LogisticsProvider {
+  SHIPROCKET
+  DELHIVERY
+  PORTER
+  DUNZO
+  SHADOWFAX
+  SELF
+}
+
+// ─── USER ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id                String        @id @default(cuid())
+  name              String?
+  email             String?       @unique
+  phone             String?       @unique
+  emailVerified     DateTime?
+  phoneVerified     DateTime?
+  image             String?
+  passwordHash      String?
+  role              Role          @default(CUSTOMER)
+  isActive          Boolean       @default(true)
+  referralCode      String?       @unique
+  referredById      String?
+  referredBy        User?         @relation("Referrals", fields: [referredById], references: [id])
+  referrals         User[]        @relation("Referrals")
+  rewardPoints      Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  addresses         Address[]
+  orders            Order[]
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+  notifications     Notification[]
+  supportTickets    SupportTicket[]
+  couponsUsed       CouponUsage[]
+  subscriptions     Subscription[]
+  rewardHistory     RewardHistory[]
+  otp               OTP[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model OTP {
+  id        String   @id @default(cuid())
+  userId    String?
+  phone     String?
+  email     String?
+  code      String
+  purpose   String   // login | verify | reset
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("otps")
+}
+
+// ─── ADDRESS ──────────────────────────────────────────────────────────────────
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  label      String   @default("Home") // Home | Work | Other
+  name       String
+  phone      String
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  pincode    String
+  country    String   @default("India")
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("addresses")
+}
+
+// ─── PRODUCT ──────────────────────────────────────────────────────────────────
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  isActive    Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  seoTitle    String?
+  seoDesc     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id                String    @id @default(cuid())
+  name              String
+  slug              String    @unique
+  shortDesc         String?
+  description       String?
+  categoryId        String
+  images            String[]
+  tags              String[]
+  isActive          Boolean   @default(true)
+  isFeatured        Boolean   @default(false)
+  isBestseller      Boolean   @default(false)
+  isNew             Boolean   @default(false)
+  nutritionFacts    Json?
+  ingredients       String?
+  storageInfo       String?
+  healthBenefits    String[]
+  allergens         String[]
+  certifications    String[]
+  seoTitle          String?
+  seoDesc           String?
+  seoKeywords       String[]
+  metaImage         String?
+  averageRating     Float     @default(0)
+  reviewCount       Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  category      Category        @relation(fields: [categoryId], references: [id])
+  variants      ProductVariant[]
+  reviews       Review[]
+  wishlistItems WishlistItem[]
+  orderItems    OrderItem[]
+  subscriptions Subscription[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id           String   @id @default(cuid())
+  productId    String
+  name         String   // "230g Pack" | "500g Pack" | "65g Trial"
+  sku          String   @unique
+  price        Float
+  comparePrice Float?
+  costPrice    Float?
+  weight       Float?
+  stock        Int      @default(0)
+  lowStockAt   Int      @default(5)
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  inventory  Inventory[]
+
+  @@map("product_variants")
+}
+
+model Inventory {
+  id          String         @id @default(cuid())
+  variantId   String
+  quantity    Int
+  type        String         // in | out | adjustment
+  reason      String?
+  reference   String?        // order ID or manual
+  createdAt   DateTime       @default(now())
+
+  variant     ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@map("inventory")
+}
+
+// ─── ORDER ────────────────────────────────────────────────────────────────────
+
+model Order {
+  id                String        @id @default(cuid())
+  orderNumber       String        @unique
+  userId            String
+  addressId         String
+  status            OrderStatus   @default(PLACED)
+  paymentStatus     PaymentStatus @default(PENDING)
+  paymentMethod     PaymentMethod @default(COD)
+  subtotal          Float
+  discountAmount    Float         @default(0)
+  couponCode        String?
+  shippingAmount    Float         @default(0)
+  taxAmount         Float         @default(0)
+  total             Float
+  notes             String?
+  cancelReason      String?
+  expectedDelivery  DateTime?
+  deliveredAt       DateTime?
+  logisticsProvider LogisticsProvider?
+  awbNumber         String?
+  trackingUrl       String?
+  invoiceUrl        String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user       User         @relation(fields: [userId], references: [id])
+  address    Address      @relation(fields: [addressId], references: [id])
+  items      OrderItem[]
+  payment    Payment?
+  timeline   OrderTimeline[]
+  refund     Refund?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String  @id @default(cuid())
+  orderId    String
+  productId  String
+  variantId  String
+  name       String
+  image      String?
+  price      Float
+  quantity   Int
+  total      Float
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product        @relation(fields: [productId], references: [id])
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@map("order_items")
+}
+
+model OrderTimeline {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  note      String?
+  createdAt DateTime    @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_timeline")
+}
+
+// ─── PAYMENT ──────────────────────────────────────────────────────────────────
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String        @unique
+  razorpayOrderId   String?       @unique
+  razorpayPaymentId String?       @unique
+  razorpaySignature String?
+  amount            Float
+  currency          String        @default("INR")
+  status            PaymentStatus @default(PENDING)
+  method            PaymentMethod
+  failureReason     String?
+  paidAt            DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  order  Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refund Refund?
+
+  @@map("payments")
+}
+
+model Refund {
+  id               String   @id @default(cuid())
+  orderId          String   @unique
+  paymentId        String   @unique
+  amount           Float
+  reason           String
+  razorpayRefundId String?
+  status           String   @default("pending")
+  processedAt      DateTime?
+  createdAt        DateTime @default(now())
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  @@map("refunds")
+}
+
+// ─── COUPONS ──────────────────────────────────────────────────────────────────
+
+model Coupon {
+  id              String     @id @default(cuid())
+  code            String     @unique
+  type            CouponType
+  value           Float
+  minOrderAmount  Float?
+  maxDiscount     Float?
+  usageLimit      Int?
+  usageCount      Int        @default(0)
+  perUserLimit    Int?
+  isActive        Boolean    @default(true)
+  startsAt        DateTime?
+  expiresAt       DateTime?
+  description     String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  usages CouponUsage[]
+
+  @@map("coupons")
+}
+
+model CouponUsage {
+  id       String   @id @default(cuid())
+  couponId String
+  userId   String
+  orderId  String?
+  usedAt   DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("coupon_usages")
+}
+
+// ─── REVIEWS ──────────────────────────────────────────────────────────────────
+
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  userId     String
+  rating     Int
+  title      String?
+  body       String?
+  images     String[]
+  isVerified Boolean  @default(false)
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@map("reviews")
+}
+
+// ─── WISHLIST ─────────────────────────────────────────────────────────────────
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// ─── SUBSCRIPTIONS ────────────────────────────────────────────────────────────
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String
+  productId   String
+  variantId   String?
+  frequency   String   // weekly | biweekly | monthly
+  nextOrderAt DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("subscriptions")
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  link      String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// ─── REWARDS ──────────────────────────────────────────────────────────────────
+
+model RewardHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  points    Int
+  type      String   // earned | redeemed
+  reason    String
+  reference String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reward_history")
+}
+
+// ─── BLOG ─────────────────────────────────────────────────────────────────────
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String
+  coverImage  String?
+  tags        String[]
+  category    String?
+  authorName  String?
+  authorImage String?
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  seoTitle    String?
+  seoDesc     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+// ─── BANNERS ──────────────────────────────────────────────────────────────────
+
+model Banner {
+  id         String   @id @default(cuid())
+  title      String
+  subtitle   String?
+  image      String
+  mobileImage String?
+  link       String?
+  isActive   Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  startsAt   DateTime?
+  endsAt     DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("banners")
+}
+
+// ─── SUPPORT ──────────────────────────────────────────────────────────────────
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String
+  orderId   String?
+  subject   String
+  body      String
+  status    TicketStatus @default(OPEN)
+  priority  String       @default("normal")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id])
+  messages TicketMessage[]
+
+  @@map("support_tickets")
+}
+
+model TicketMessage {
+  id        String   @id @default(cuid())
+  ticketId  String
+  senderId  String
+  body      String
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@map("ticket_messages")
+}
+
+// ─── SITE CONFIG ──────────────────────────────────────────────────────────────
+
+model SiteConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  group     String?
+  updatedAt DateTime @updatedAt
+
+  @@map("site_config")
+}
+
+model Pincode {
+  id            String  @id @default(cuid())
+  code          String  @unique
+  city          String
+  state         String
+  isServiceable Boolean @default(true)
+  shippingDays  Int     @default(3)
+  shippingCost  Float   @default(0)
+
+  @@map("pincodes")
+}
