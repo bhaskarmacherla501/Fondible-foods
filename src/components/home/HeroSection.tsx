@@ -15,7 +15,7 @@ export function HeroSection() {
     <section className="relative overflow-hidden bg-hero-gradient pt-8 pb-20 md:pt-16 md:pb-28">
       <div className="page-container grid lg:grid-cols-2 gap-12 items-center">
         <div>
-          <span className="section-label">Real Ingredients. Real Cookies. Real Joy.</span>
+          <span className="section-label">Better Food. Better Living.</span>
           <h1 className="section-title text-brown mt-2">
             Cookies that love you back
           </h1>

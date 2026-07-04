@@ -25,7 +25,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://fondible.in'),
   title: {
-    default:  'Fondible — Real Ingredients. Real Cookies. Real Joy.',
+    default:  'Fondible — Better Food. Better Living.',
     template: '%s | Fondible',
   },
   description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery — zero refined sugar, zero artificial ingredients, zero shortcuts. Freshly baked and delivered in Hyderabad.',
@@ -37,13 +37,13 @@ export const metadata: Metadata = {
     locale:      'en_IN',
     url:         'https://fondible.in',
     siteName:    'Fondible',
-    title:       'Fondible — Real Ingredients. Real Cookies. Real Joy.',
+    title:       'Fondible — Better Food. Better Living.',
     description: 'Cookies baked with whole wheat, real butter, whole nuts and jaggery. No refined sugar. No artificial ingredients. No shortcuts.',
     images: [{ url: '/images/og-image.jpg', width: 1200, height: 630, alt: 'Fondible Cookies' }],
   },
   twitter: {
     card:        'summary_large_image',
-    title:       'Fondible — Real Ingredients. Real Cookies. Real Joy.',
+    title:       'Fondible — Better Food. Better Living.',
     description: 'Cookies baked with whole wheat, real butter, whole nuts and jaggery. No refined sugar. No artificial ingredients.',
     images:      ['/images/og-image.jpg'],
   },

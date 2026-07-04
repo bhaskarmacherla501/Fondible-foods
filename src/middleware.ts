@@ -6,7 +6,7 @@ const PUBLIC_ROUTES   = ['/', '/about', '/shop', '/blog', '/contact', '/faq',
   '/our-ingredients', '/ingredients', '/privacy-policy', '/terms', '/shipping-policy',
   '/return-policy', '/track-order', '/corporate-gifting', '/franchise', '/careers']
 const AUTH_ROUTES     = ['/login', '/signup', '/forgot-password']
-const CUSTOMER_ROUTES = ['/dashboard']
+const CUSTOMER_ROUTES = ['/dashboard', '/checkout']
 const ADMIN_ROUTES    = ['/admin']
 const API_ADMIN       = ['/api/admin']
 
@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (AUTH_ROUTES.some(r => pathname.startsWith(r)) && session?.user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   // Protect customer routes

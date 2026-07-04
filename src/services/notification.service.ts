@@ -134,7 +134,7 @@ export class NotificationService {
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(44,24,16,.12);">
     <div style="background:#2C1810;padding:32px;text-align:center;">
       <h1 style="color:#F5DFA0;font-size:28px;margin:0;font-style:italic;">Fondible</h1>
-      <p style="color:rgba(245,223,160,.7);margin:8px 0 0;font-size:13px;">Real Ingredients. Real Cookies. Real Joy.</p>
+      <p style="color:rgba(245,223,160,.7);margin:8px 0 0;font-size:13px;">Better Food. Better Living.</p>
     </div>
     <div style="padding:32px;">
       <h2 style="color:#2C1810;font-size:22px;">Order #${orderNumber}</h2>

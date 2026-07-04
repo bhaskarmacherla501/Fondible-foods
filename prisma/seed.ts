@@ -160,10 +160,10 @@ async function main() {
 
   // Brand site config
   const siteConfig = [
-    { key: 'brand_tagline',    value: 'Real Ingredients. Real Cookies. Real Joy.' },
+    { key: 'brand_tagline',    value: 'Better Food. Better Living.' },
     { key: 'brand_promise',    value: 'No refined sugar. No artificial ingredients. No shortcuts.' },
     { key: 'brand_hero_claim', value: 'Every ingredient has a name.' },
-    { key: 'wa_order_message', value: 'Hi Fondible! I\'d love to order your cookies 🍪 Real ingredients, real joy!' },
+    { key: 'wa_order_message', value: 'Hi Fondible! I\'d love to order your cookies 🍪 Better Food. Better Living.' },
   ]
   for (const cfg of siteConfig) {
     await prisma.siteConfig.upsert({
