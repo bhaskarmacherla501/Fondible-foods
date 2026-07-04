@@ -14,7 +14,14 @@ export async function GET() {
     '/contact', '/faq', '/corporate-gifting', '/franchise', '/careers',
     '/privacy-policy', '/terms', '/shipping-policy', '/return-policy', '/blog', '/track-order']
 
-  const urls = [
+  interface SitemapUrl {
+    loc: string
+    changefreq: string
+    priority: string
+    lastmod?: string
+  }
+
+  const urls: SitemapUrl[] = [
     ...staticPages.map(p => ({ loc: `${BASE}${p}`, changefreq: 'weekly', priority: p === '' ? '1.0' : '0.8' })),
     ...products.map(p => ({ loc: `${BASE}/shop/${p.slug}`, changefreq: 'weekly', priority: '0.9', lastmod: p.updatedAt.toISOString() })),
     ...blogs.map(b => ({ loc: `${BASE}/blog/${b.slug}`, changefreq: 'monthly', priority: '0.7', lastmod: b.updatedAt.toISOString() })),

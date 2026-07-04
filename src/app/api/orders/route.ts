@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
     if (!session?.user) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     const body    = await req.json()
     const data    = createOrderSchema.parse(body)
-    const order   = await OrderService.create({ ...data, userId: session.user.id })
+    const items   = data.items.map(item => ({ ...item, image: item.image ?? '' }))
+    const order   = await OrderService.create({ ...data, items, userId: session.user.id })
     return NextResponse.json({ success: true, data: order }, { status: 201 })
   } catch (err) {
     if (err instanceof z.ZodError)
