@@ -4,9 +4,11 @@ import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
 import { SessionProvider } from 'next-auth/react'
 import { CartDrawer } from '@/components/cart/CartDrawer'
+import { CartConfigHydrator } from '@/components/cart/CartConfigHydrator'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import prisma from '@/lib/prisma'
+import { getStoreSettings } from '@/lib/settings'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -90,11 +92,16 @@ export const viewport: Viewport = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getSeoSettings()
+  const [settings, storeSettings] = await Promise.all([getSeoSettings(), getStoreSettings()])
 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body className="bg-cream font-body text-brown antialiased">
+        <CartConfigHydrator config={{
+          shippingFee: storeSettings.shippingFee,
+          freeShippingThreshold: storeSettings.freeShippingThreshold,
+          taxRate: storeSettings.taxRate,
+        }} />
         {settings?.googleAnalyticsId && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAnalyticsId}`} strategy="afterInteractive" />

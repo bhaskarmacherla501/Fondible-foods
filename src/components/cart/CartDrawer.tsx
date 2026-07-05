@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 
 export function CartDrawer() {
   const { items, subtotal, discountAmount, couponCode, shippingAmount, total,
-          updateQty, removeItem, clearCart, itemCount } = useCartStore()
+          updateQty, removeItem, clearCart, itemCount, freeShippingThreshold } = useCartStore()
   const open    = (useCartStore as unknown as { getState: () => { open?: boolean } }).getState().open ?? false
   const setOpen = (v: boolean) => useCartStore.setState({ open: v } as never)
 
@@ -133,7 +133,7 @@ export function CartDrawer() {
                   </p>
                 ) : (
                   <p className="text-xs text-center text-brown/60">
-                    Add {formatPrice(499 - subtotal)} more for free shipping
+                    Add {formatPrice(freeShippingThreshold - subtotal)} more for free shipping
                   </p>
                 )}
 

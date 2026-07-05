@@ -579,6 +579,22 @@ model SeoSetting {
   @@map("seo_settings")
 }
 
+model StoreSetting {
+  id                    String   @id @default(cuid())
+  supportPhone          String   @default("+91 80197 30055")
+  supportEmail          String   @default("hello@fondible.in")
+  whatsappNumber        String   @default("918019730055")
+  address               String   @default("Hyderabad, India")
+  shippingFee           Float    @default(49)
+  freeShippingThreshold Float    @default(499)
+  taxRate               Float    @default(0)
+  instagramUrl          String?  @default("https://www.instagram.com/fondible")
+  facebookUrl           String?  @default("https://www.facebook.com/fondible")
+  updatedAt             DateTime @updatedAt
+
+  @@map("store_settings")
+}
+
 // ─── SUPPORT ──────────────────────────────────────────────────────────────────
 
 model SupportTicket {

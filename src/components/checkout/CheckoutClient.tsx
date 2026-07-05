@@ -33,7 +33,7 @@ const emptyAddressForm = { label: 'Home', name: '', phone: '', line1: '', line2:
 
 export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Address[]; razorpayKeyId: string }) {
   const router = useRouter()
-  const { items, subtotal, discountAmount, couponCode, shippingAmount, total, applyCoupon, removeCoupon, clearCart } = useCartStore()
+  const { items, subtotal, discountAmount, couponCode, shippingAmount, taxAmount, total, applyCoupon, removeCoupon, clearCart } = useCartStore()
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(addresses[0]?.id ?? null)
   const [addingNew, setAddingNew] = useState(addresses.length === 0)
@@ -92,7 +92,7 @@ export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Addres
         })),
         paymentMethod,
         couponCode,
-        subtotal, discountAmount, shippingAmount, taxAmount: 0, total,
+        subtotal, discountAmount, shippingAmount, taxAmount, total,
       }),
     })
     const data = await res.json()

@@ -3,9 +3,17 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { CartItem, Cart } from '@/types'
 
-const SHIPPING_THRESHOLD = 499
-const SHIPPING_COST      = 49
-const TAX_RATE           = 0 // GST included in price
+let SHIPPING_THRESHOLD = 499
+let SHIPPING_COST      = 49
+let TAX_RATE           = 0 // GST included in price unless configured otherwise
+
+export function configureCartTotals(config: { shippingFee: number; freeShippingThreshold: number; taxRate: number }) {
+  SHIPPING_THRESHOLD = config.freeShippingThreshold
+  SHIPPING_COST      = config.shippingFee
+  TAX_RATE           = config.taxRate
+  const { items, discountAmount, couponCode } = useCartStore.getState()
+  useCartStore.setState({ freeShippingThreshold: SHIPPING_THRESHOLD, ...computeTotals(items, discountAmount, couponCode) })
+}
 
 interface CartStore extends Cart {
   addItem:      (item: Omit<CartItem, 'quantity'>, qty?: number) => void
@@ -17,6 +25,7 @@ interface CartStore extends Cart {
   isInCart:     (productId: string, variantId: string) => boolean
   getItemQty:   (productId: string, variantId: string) => number
   itemCount:    number
+  freeShippingThreshold: number
 }
 
 function computeTotals(items: CartItem[], discountAmount: number, couponCode?: string) {
@@ -38,6 +47,7 @@ export const useCartStore = create<CartStore>()(
       taxAmount:      0,
       total:          0,
       itemCount:      0,
+      freeShippingThreshold: SHIPPING_THRESHOLD,
 
       addItem(item, qty = 1) {
         set(state => {

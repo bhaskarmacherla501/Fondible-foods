@@ -12,6 +12,7 @@ import { HowToOrder }        from '@/components/home/HowToOrder'
 import { BlogPreview }       from '@/components/home/BlogPreview'
 import { StickyWA }          from '@/components/common/StickyWA'
 import prisma                from '@/lib/prisma'
+import { getStoreSettings }  from '@/lib/settings'
 
 export const metadata: Metadata = {
   title:       'Fondible — Better Food. Better Living.',
@@ -60,11 +61,12 @@ async function getActiveBanners() {
 }
 
 export default async function HomePage() {
-  const [products, testimonials, blogs, banners] = await Promise.all([
+  const [products, testimonials, blogs, banners, settings] = await Promise.all([
     getFeaturedProducts(),
     getTestimonials(),
     getLatestBlogs(),
     getActiveBanners(),
+    getStoreSettings(),
   ])
 
   return (
@@ -78,8 +80,8 @@ export default async function HomePage() {
         logo:       'https://fondible.in/images/logo.png',
         description: 'Premium cookies baked with whole wheat, real butter, whole nuts and jaggery. Better Food. Better Living.',
         address:    { '@type': 'PostalAddress', addressCountry: 'IN' },
-        contactPoint: { '@type': 'ContactPoint', telephone: '+91-80197-30055', contactType: 'customer service' },
-        sameAs:     ['https://www.instagram.com/fondible', 'https://www.facebook.com/fondible'],
+        contactPoint: { '@type': 'ContactPoint', telephone: settings.supportPhone, contactType: 'customer service' },
+        sameAs:     [settings.instagramUrl, settings.facebookUrl].filter(Boolean),
       })}} />
 
       <HeroSection />
@@ -107,7 +109,7 @@ export default async function HomePage() {
         <BlogPreview blogs={blogs} />
       </Suspense>
 
-      <StickyWA />
+      <StickyWA whatsappNumber={settings.whatsappNumber} />
     </>
   )
 }

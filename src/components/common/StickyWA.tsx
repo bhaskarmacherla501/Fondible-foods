@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export function StickyWA() {
+export function StickyWA({ whatsappNumber = '918019730055' }: { whatsappNumber?: string }) {
   const [visible, setVisible] = useState(false)
   useEffect(() => {
     const handler = () => setVisible(window.scrollY > 300)
@@ -15,7 +15,7 @@ export function StickyWA() {
       {visible && (
         <motion.a
           key="sticky-wa"
-          href="https://wa.me/918019730055?text=Hi%20Fondible!%20I%20have%20a%20question%20about%20my%20order%20%F0%9F%8D%AA"
+          href={`https://wa.me/${whatsappNumber}?text=Hi%20Fondible!%20I%20have%20a%20question%20about%20my%20order%20%F0%9F%8D%AA`}
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, y: 20, scale: 0.9 }}

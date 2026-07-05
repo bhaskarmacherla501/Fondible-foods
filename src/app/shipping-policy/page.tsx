@@ -1,18 +1,23 @@
 import type { Metadata } from 'next'
+import { getStoreSettings } from '@/lib/settings'
+import { formatPrice } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title:       'Shipping Policy',
   description: 'Delivery timelines and shipping costs for Fondible orders across India.',
   alternates:  { canonical: 'https://fondible.in/shipping-policy' },
 }
+export const dynamic = 'force-dynamic'
 
-const ROWS = [
-  { area: 'Hyderabad', days: '1 day', cost: 'Free' },
-  { area: 'Mumbai, Delhi, Bangalore, Chennai, Pune', days: '3 days', cost: '₹60 (free above ₹499)' },
-  { area: 'Rest of India', days: '4-5 business days', cost: '₹60 (free above ₹499)' },
-]
+export default async function ShippingPolicyPage() {
+  const settings = await getStoreSettings()
+  const feeLabel = `${formatPrice(settings.shippingFee)} (free above ${formatPrice(settings.freeShippingThreshold)})`
+  const ROWS = [
+    { area: 'Hyderabad', days: '1 day', cost: 'Free' },
+    { area: 'Mumbai, Delhi, Bangalore, Chennai, Pune', days: '3 days', cost: feeLabel },
+    { area: 'Rest of India', days: '4-5 business days', cost: feeLabel },
+  ]
 
-export default function ShippingPolicyPage() {
   return (
     <div className="page-container py-16 max-w-3xl mx-auto">
       <div className="text-center mb-12">
