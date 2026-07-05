@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { HeroSection }       from '@/components/home/HeroSection'
+import { PromoBanner }       from '@/components/home/PromoBanner'
 import { TrustStrip }        from '@/components/home/TrustStrip'
 import { BenefitsSection }   from '@/components/home/BenefitsSection'
 import { FreshBatchSection } from '@/components/home/FreshBatchSection'
@@ -44,11 +45,26 @@ async function getLatestBlogs() {
   })
 }
 
+async function getActiveBanners() {
+  const now = new Date()
+  return prisma.banner.findMany({
+    where: {
+      isActive: true,
+      AND: [
+        { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+        { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+      ],
+    },
+    orderBy: { sortOrder: 'asc' },
+  })
+}
+
 export default async function HomePage() {
-  const [products, testimonials, blogs] = await Promise.all([
+  const [products, testimonials, blogs, banners] = await Promise.all([
     getFeaturedProducts(),
     getTestimonials(),
     getLatestBlogs(),
+    getActiveBanners(),
   ])
 
   return (
@@ -67,6 +83,7 @@ export default async function HomePage() {
       })}} />
 
       <HeroSection />
+      <PromoBanner banners={banners} />
       <TrustStrip />
 
       <Suspense>
