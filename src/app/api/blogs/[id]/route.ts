@@ -26,6 +26,8 @@ const updateSchema = z.object({
   authorName:  z.string().optional(),
   tags:        z.array(z.string()).optional(),
   isPublished: z.boolean().optional(),
+  seoTitle:    z.string().optional(),
+  seoDesc:     z.string().optional(),
 })
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

@@ -14,6 +14,8 @@ interface BlogData {
   authorName: string | null
   tags: string[]
   isPublished: boolean
+  seoTitle?: string | null
+  seoDesc?: string | null
 }
 
 export function BlogForm({ blog }: { blog?: BlogData }) {
@@ -27,6 +29,8 @@ export function BlogForm({ blog }: { blog?: BlogData }) {
   const [authorName, setAuthorName] = useState(blog?.authorName ?? 'Team Fondible')
   const [tags, setTags] = useState(blog?.tags.join(', ') ?? '')
   const [isPublished, setIsPublished] = useState(blog?.isPublished ?? false)
+  const [seoTitle, setSeoTitle] = useState(blog?.seoTitle ?? '')
+  const [seoDesc, setSeoDesc] = useState(blog?.seoDesc ?? '')
   const [saving, setSaving] = useState(false)
 
   const handleSave = async () => {
@@ -39,6 +43,7 @@ export function BlogForm({ blog }: { blog?: BlogData }) {
         authorName: authorName || undefined,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         isPublished,
+        seoTitle: seoTitle || undefined, seoDesc: seoDesc || undefined,
       }
       const res  = await fetch(isEditing ? `/api/blogs/${blog.id}` : '/api/blogs', {
         method: isEditing ? 'PATCH' : 'POST',
@@ -82,6 +87,18 @@ export function BlogForm({ blog }: { blog?: BlogData }) {
             <label className="text-sm font-semibold text-brown block mb-1.5">Content</label>
             <textarea value={content} onChange={e => setContent(e.target.value)} rows={16} className="input-base font-mono text-sm"
               placeholder="Post content. Separate paragraphs with a blank line." />
+          </div>
+        </div>
+
+        <div className="card-base p-6 space-y-4">
+          <h2 className="font-semibold text-brown">SEO</h2>
+          <div>
+            <label className="text-sm font-semibold text-brown block mb-1.5">SEO Title</label>
+            <input value={seoTitle} onChange={e => setSeoTitle(e.target.value)} className="input-base" placeholder={title} />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-brown block mb-1.5">SEO Description</label>
+            <textarea value={seoDesc} onChange={e => setSeoDesc(e.target.value)} rows={2} className="input-base" placeholder={excerpt || 'Falls back to the excerpt'} />
           </div>
         </div>
       </div>

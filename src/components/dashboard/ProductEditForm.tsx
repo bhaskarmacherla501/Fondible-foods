@@ -19,6 +19,8 @@ interface ProductData {
   isFeatured: boolean
   isBestseller: boolean
   isNew: boolean
+  seoTitle: string | null
+  seoDesc: string | null
   variants: Variant[]
 }
 
@@ -30,6 +32,8 @@ export function ProductEditForm({ product }: { product: ProductData }) {
   const [isFeatured, setIsFeatured] = useState(product.isFeatured)
   const [isBestseller, setIsBestseller] = useState(product.isBestseller)
   const [isNew, setIsNew] = useState(product.isNew)
+  const [seoTitle, setSeoTitle] = useState(product.seoTitle ?? '')
+  const [seoDesc, setSeoDesc] = useState(product.seoDesc ?? '')
   const [variants, setVariants] = useState(product.variants)
   const [saving, setSaving] = useState(false)
 
@@ -43,7 +47,10 @@ export function ProductEditForm({ product }: { product: ProductData }) {
       // Save product-level fields
       const res = await fetch(`/api/products/${product.id}`, {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, shortDesc, isActive, isFeatured, isBestseller, isNew }),
+        body: JSON.stringify({
+          name, shortDesc, isActive, isFeatured, isBestseller, isNew,
+          seoTitle: seoTitle || undefined, seoDesc: seoDesc || undefined,
+        }),
       })
       const data = await res.json()
       if (!data.success) { toast.error(data.error ?? 'Failed to save'); return }
@@ -88,6 +95,18 @@ export function ProductEditForm({ product }: { product: ProductData }) {
           <div>
             <label className="text-sm font-semibold text-brown block mb-1.5">Short Description</label>
             <textarea value={shortDesc} onChange={e => setShortDesc(e.target.value)} rows={3} className="input-base" />
+          </div>
+        </div>
+
+        <div className="card-base p-6 space-y-4">
+          <h2 className="font-semibold text-brown">SEO</h2>
+          <div>
+            <label className="text-sm font-semibold text-brown block mb-1.5">SEO Title</label>
+            <input value={seoTitle} onChange={e => setSeoTitle(e.target.value)} className="input-base" placeholder={name} />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-brown block mb-1.5">SEO Description</label>
+            <textarea value={seoDesc} onChange={e => setSeoDesc(e.target.value)} rows={2} className="input-base" placeholder={shortDesc || 'Falls back to the short description'} />
           </div>
         </div>
 

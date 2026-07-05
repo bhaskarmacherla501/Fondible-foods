@@ -562,6 +562,23 @@ model Banner {
   @@map("banners")
 }
 
+// ─── SEO ──────────────────────────────────────────────────────────────────────
+
+model SeoSetting {
+  id                     String   @id @default(cuid())
+  siteTitle              String   @default("Fondible — Better Food. Better Living.")
+  titleTemplate          String   @default("%s | Fondible")
+  metaDescription        String   @default("Premium cookies baked with whole wheat, real butter, whole nuts and jaggery — zero refined sugar, zero artificial ingredients, zero shortcuts. Freshly baked and delivered across India.")
+  ogImage                String   @default("/images/og-image.jpg")
+  keywords               String[]
+  googleAnalyticsId      String?
+  googleSiteVerification String?
+  robotsIndex            Boolean  @default(true)
+  updatedAt              DateTime @updatedAt
+
+  @@map("seo_settings")
+}
+
 // ─── SUPPORT ──────────────────────────────────────────────────────────────────
 
 model SupportTicket {

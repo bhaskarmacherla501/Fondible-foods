@@ -26,6 +26,8 @@ const updateSchema = z.object({
   isFeatured:   z.boolean().optional(),
   isBestseller: z.boolean().optional(),
   isNew:        z.boolean().optional(),
+  seoTitle:     z.string().optional(),
+  seoDesc:      z.string().optional(),
   variant: z.object({
     id:    z.string(),
     price: z.number().positive().optional(),
