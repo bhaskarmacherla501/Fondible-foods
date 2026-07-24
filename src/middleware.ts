@@ -10,9 +10,20 @@ const CUSTOMER_ROUTES = ['/dashboard', '/checkout']
 const ADMIN_ROUTES    = ['/admin']
 const API_ADMIN       = ['/api/admin']
 
+const CANONICAL_HOST = 'fondible.in'
+
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  const session      = await auth()
+  const { pathname, search } = request.nextUrl
+  const host = request.headers.get('host') ?? ''
+
+  // Force every request onto the canonical domain — Vercel keeps serving this
+  // deployment on its default *.vercel.app URLs even after a custom domain is
+  // attached, which Razorpay's live mode rejects as an unauthorized origin.
+  if (host.endsWith('.vercel.app')) {
+    return NextResponse.redirect(`https://${CANONICAL_HOST}${pathname}${search}`, 308)
+  }
+
+  const session = await auth()
 
   // Rate limiting headers (basic — use Upstash Redis in production)
   const response = NextResponse.next()
