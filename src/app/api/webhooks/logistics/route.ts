@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ received: true })
   } catch (err) {
-    console.error('Shiprocket webhook error:', err)
+    console.error('Logistics webhook error:', err)
     return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
   }
 }
