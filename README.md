@@ -14,7 +14,7 @@
 | Auth         | NextAuth v5 (JWT, Google OAuth, Phone OTP)          |
 | Payments     | Razorpay (UPI, Cards, Wallets, COD)                 |
 | State        | Zustand (cart, UI)                                  |
-| Notifications| WhatsApp Cloud API + Nodemailer + MSG91 OTP         |
+| Notifications| WhatsApp Cloud API + Nodemailer                     |
 | Images       | Cloudinary CDN + Next.js Image Optimization         |
 | Port         | **3007** (all other ports untouched)                |
 

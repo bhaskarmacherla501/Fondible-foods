@@ -61,29 +61,9 @@ export class NotificationService {
 
   // ─── OTP ───────────────────────────────────────────────────────────────────
   static async sendOTP(phone: string, otp: string) {
-    // MSG91 integration
-    if (process.env.MSG91_AUTH_KEY) {
-      try {
-        await fetch('https://api.msg91.com/api/v5/flow/', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', authkey: process.env.MSG91_AUTH_KEY },
-          body: JSON.stringify({
-            template_id: process.env.MSG91_TEMPLATE_ID,
-            sender:      process.env.MSG91_SENDER_ID,
-            short_url:   '0',
-            mobiles:     `91${phone}`,
-            VAR1:        otp,
-          }),
-        })
-      } catch (err) {
-        console.error('OTP send error:', err)
-      }
-    } else {
-      // Fallback: WhatsApp OTP
-      await NotificationService.sendWhatsApp(phone,
-        `🔐 Your Fondible OTP is *${otp}*. Valid for 10 minutes. Do not share with anyone.`
-      )
-    }
+    await NotificationService.sendWhatsApp(`91${phone}`,
+      `🔐 Your Fondible OTP is *${otp}*. Valid for 10 minutes. Do not share with anyone.`
+    )
   }
 
   // ─── Order Events ──────────────────────────────────────────────────────────
