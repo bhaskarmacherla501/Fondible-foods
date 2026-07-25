@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma'
 import { generateOrderNumber, getPaginationMeta } from '@/lib/utils'
 import { NotificationService } from './notification.service'
 import { ProductService } from './product.service'
+import { ShiprocketService } from './shiprocket.service'
 import type { CartItem, OrderStatus, PaymentMethod, PaginationParams } from '@/types'
 
 export class OrderService {
@@ -127,7 +128,33 @@ export class OrderService {
       order.userId, order.orderNumber, status
     ).catch(console.error)
 
+    if (status === 'CONFIRMED' && !order.awbNumber) {
+      OrderService.bookShipment(orderId).catch(console.error)
+    }
+
     return order
+  }
+
+  static async bookShipment(orderId: string) {
+    const order = await prisma.order.findUniqueOrThrow({
+      where:   { id: orderId },
+      include: { items: true, address: true, user: { select: { email: true, phone: true } } },
+    })
+
+    const shipment = await ShiprocketService.createShipment(order)
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        logisticsProvider: 'SHIPROCKET',
+        awbNumber:         shipment.awbNumber,
+        trackingUrl:       shipment.trackingUrl,
+      },
+    })
+
+    await prisma.orderTimeline.create({
+      data: { orderId, status: 'CONFIRMED', note: `Shipment booked via Shiprocket — AWB ${shipment.awbNumber}` },
+    })
   }
 
   static async getByUser(userId: string, params: PaginationParams) {
@@ -150,6 +177,17 @@ export class OrderService {
       where:   { id: orderId, ...(userId ? { userId } : {}) },
       include: { items: true, address: true, timeline: { orderBy: { createdAt: 'asc' } }, payment: true },
     })
+  }
+
+  static async recordShipmentUpdate(orderNumber: string, mappedStatus: OrderStatus | null, note: string) {
+    const order = await prisma.order.findUnique({ where: { orderNumber } })
+    if (!order) return
+
+    if (mappedStatus) {
+      await OrderService.updateStatus(order.id, mappedStatus, note)
+    } else {
+      await prisma.orderTimeline.create({ data: { orderId: order.id, status: order.status, note } })
+    }
   }
 
   static async getByOrderNumber(orderNumber: string) {
