@@ -122,4 +122,35 @@ export class ShiprocketService {
       trackingUrl: `https://shiprocket.co/tracking/${awbCode}`,
     }
   }
+
+  // Live courier rate for checkout. Times out fast and never throws —
+  // callers should treat a null return as "fall back to the flat rate."
+  static async checkServiceability(deliveryPincode: string, weightKg: number, cod: boolean) {
+    try {
+      const token = await getToken()
+      const params = new URLSearchParams({
+        pickup_postcode:   process.env.SHIPROCKET_PICKUP_PINCODE ?? '',
+        delivery_postcode: deliveryPincode,
+        weight:            String(Math.max(weightKg, 0.1)),
+        cod:               cod ? '1' : '0',
+      })
+
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 6000)
+      const res = await fetch(`${BASE_URL}/courier/serviceability/?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal:  controller.signal,
+      }).finally(() => clearTimeout(timeout))
+
+      const data = await res.json()
+      const companies = data?.data?.available_courier_companies as Array<{ rate: number; estimated_delivery_days?: string }> | undefined
+      if (!res.ok || !companies?.length) return null
+
+      const cheapest = companies.reduce((min, c) => (c.rate < min.rate ? c : min), companies[0])
+      return { rate: Math.ceil(cheapest.rate), days: cheapest.estimated_delivery_days ?? null }
+    } catch (err) {
+      console.error('Shiprocket serviceability check failed:', err)
+      return null
+    }
+  }
 }

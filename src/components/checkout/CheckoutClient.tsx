@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Script from 'next/script'
@@ -33,7 +33,7 @@ const emptyAddressForm = { label: 'Home', name: '', phone: '', line1: '', line2:
 
 export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Address[]; razorpayKeyId: string }) {
   const router = useRouter()
-  const { items, subtotal, discountAmount, couponCode, shippingAmount, taxAmount, total, applyCoupon, removeCoupon, clearCart } = useCartStore()
+  const { items, subtotal, discountAmount, couponCode, shippingAmount, taxAmount, freeShippingThreshold, applyCoupon, removeCoupon, clearCart } = useCartStore()
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(addresses[0]?.id ?? null)
   const [addingNew, setAddingNew] = useState(addresses.length === 0)
@@ -44,6 +44,36 @@ export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Addres
 
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'RAZORPAY'>('COD')
   const [placingOrder, setPlacingOrder] = useState(false)
+
+  const [liveShippingRate, setLiveShippingRate] = useState<number | null>(null)
+
+  const targetPincode = addingNew ? addressForm.pincode : addresses.find(a => a.id === selectedAddressId)?.pincode
+
+  useEffect(() => {
+    if (!targetPincode || !validatePincode(targetPincode) || items.length === 0) {
+      setLiveShippingRate(null)
+      return
+    }
+    let cancelled = false
+    fetch('/api/shipping/rate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pincode: targetPincode,
+        items:   items.map(i => ({ variantId: i.variantId, quantity: i.quantity })),
+        cod:     paymentMethod === 'COD',
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (cancelled) return
+        setLiveShippingRate(data.success ? data.data.rate : null)
+      })
+      .catch(() => { if (!cancelled) setLiveShippingRate(null) })
+    return () => { cancelled = true }
+  }, [targetPincode, paymentMethod, items])
+
+  const effectiveShipping = subtotal >= freeShippingThreshold ? 0 : (liveShippingRate ?? shippingAmount)
+  const effectiveTotal    = Math.max(0, subtotal - discountAmount + effectiveShipping + taxAmount)
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return
@@ -92,7 +122,9 @@ export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Addres
         })),
         paymentMethod,
         couponCode,
-        subtotal, discountAmount, shippingAmount, taxAmount, total,
+        subtotal, discountAmount, taxAmount,
+        shippingAmount: effectiveShipping,
+        total:          effectiveTotal,
       }),
     })
     const data = await res.json()
@@ -293,10 +325,10 @@ export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Addres
               <div className="flex justify-between text-green-700"><span>Discount</span><span>−{formatPrice(discountAmount)}</span></div>
             )}
             <div className="flex justify-between text-brown/70">
-              <span>Shipping</span><span>{shippingAmount === 0 ? 'FREE' : formatPrice(shippingAmount)}</span>
+              <span>Shipping</span><span>{effectiveShipping === 0 ? 'FREE' : formatPrice(effectiveShipping)}</span>
             </div>
             <div className="flex justify-between text-base font-bold text-brown pt-2 border-t border-cream-dark">
-              <span>Total</span><span>{formatPrice(total)}</span>
+              <span>Total</span><span>{formatPrice(effectiveTotal)}</span>
             </div>
           </div>
 
