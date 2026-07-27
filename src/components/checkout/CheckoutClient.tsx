@@ -42,7 +42,7 @@ export function CheckoutClient({ addresses, razorpayKeyId }: { addresses: Addres
   const [couponInput, setCouponInput] = useState('')
   const [applyingCoupon, setApplyingCoupon] = useState(false)
 
-  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'RAZORPAY'>('COD')
+  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'RAZORPAY'>('RAZORPAY')
   const [placingOrder, setPlacingOrder] = useState(false)
 
   const [liveShippingRate, setLiveShippingRate] = useState<number | null>(null)
