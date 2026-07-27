@@ -27,7 +27,7 @@ function LoginForm() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const res = await signIn('credentials', { email, password, redirect: false })
+    const res = await signIn('credentials', { email: email.trim().toLowerCase(), password, redirect: false })
     setLoading(false)
     if (res?.error) { toast.error('Invalid email or password'); return }
     toast.success('Welcome back!')
@@ -104,7 +104,7 @@ function LoginForm() {
 
           {mode === 'email' ? (
             <form onSubmit={handleEmailLogin} className="space-y-4">
-              <input type="email" required placeholder="Email address" value={email}
+              <input type="email" required placeholder="Email address" value={email} autoCapitalize="off" autoCorrect="off"
                 onChange={e => setEmail(e.target.value)} className="input-base" />
               <input type="password" required placeholder="Password" value={password}
                 onChange={e => setPassword(e.target.value)} className="input-base" />
