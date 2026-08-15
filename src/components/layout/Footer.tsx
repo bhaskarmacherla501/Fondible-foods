@@ -8,7 +8,7 @@ const FOOTER_LINKS = {
     { label: 'Mixed Nut Supreme', href: '/shop/mixed-nut-supreme' },
     { label: 'Cashew Classic',    href: '/shop/cashew-classic' },
     { label: 'Ragi Almond',       href: '/shop/ragi-almond' },
-    { label: 'Walnut Cookies',    href: '/shop/walnut-cookies' },
+    { label: 'Pumpkin Seed Cookies', href: '/shop/pumpkin-seed-cookies' },
     { label: 'Coconut Classic',   href: '/shop/coconut-classic' },
     { label: 'Roasted Almond',    href: '/shop/roasted-almond' },
   ],
